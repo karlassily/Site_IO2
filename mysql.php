@@ -4,7 +4,7 @@
 $host="localhost";
 $username="root";
 $password="";
-$database="utilisateur";
+$database="Site_IO2";
 
 $conn = new mysqli($host, $username, $password, $database);
 

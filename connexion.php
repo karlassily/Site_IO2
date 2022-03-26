@@ -15,7 +15,7 @@ if (empty($_POST["pseudoCO"])){
 $pseudo = htmlspecialchars($_POST["pseudoCO"]);
 $mdp  = sha1(htmlspecialchars($_POST["mdpCO"]));
 
-$query = "SELECT * FROM `utilisateur` WHERE pseudo='$pseudo' and mdp='$mdp'";
+$query = "SELECT * FROM `utilisateurs` WHERE pseudo='$pseudo' and mdp='$mdp'";
 $result = mysqli_query($conn,$query) or die(mysql_error());
 $rows = mysqli_num_rows($result);
 if($rows>=1){

@@ -14,11 +14,11 @@ if(!isset($_SESSION["pseudo"])){
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Mon profile</title>
+    <title>Mon profil</title>
 </head>
 <body>
 
-<h1><?php echo "Profile de ".$_SESSION["pseudo"] ?></h1>
+<h1><?php echo "Profil de ".$_SESSION["pseudo"] ?></h1>
 
 </body>
 </html>

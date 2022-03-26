@@ -14,13 +14,17 @@
   <body>
       <h1>Site de notation</h1>
       <br>
-      <br>
       <?php 
         if($connecte){
-          echo "<a href=\"monProfile.php\">mon profile</a><br><br><a href=\"deconnexion.php\">deconnexion</a>";
+          echo "<a href=\"monProfile.php\">mon profil</a><br><br><a href=\"deconnexion.php\">deconnexion</a>";
         }
         else{
+          echo "vous n'etes pas connecté";
+          echo "<br>";
+          echo "<br>";
           echo "<a href=\"connexion.html\">connexion</a>";
+          echo "<br>";
+          echo "<a href=\"inscription.html\">inscription</a>";
         }
       ?>
       
