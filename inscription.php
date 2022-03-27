@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo $reussite; 
         }
         else{
-            echo "<p>Vous avez deja un compte : <a href=\"connexion.html\">connexion</a></p>";
+            echo "<p>Vous avez deja un compte : <a href=\"connexion.php\">connexion</a></p>";
         }
         ?>
     </p>

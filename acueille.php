@@ -22,7 +22,7 @@
           echo "vous n'etes pas connecté";
           echo "<br>";
           echo "<br>";
-          echo "<a href=\"connexion.html\">connexion</a>";
+          echo "<a href=\"connexion.php\">connexion</a>";
           echo "<br>";
           echo "<a href=\"inscription.php\">inscription</a>";
         }
