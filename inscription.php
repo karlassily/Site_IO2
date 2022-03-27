@@ -5,40 +5,37 @@ include ("mysql.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // verifie les infos
     if (empty($_POST["mdp"])){
-        die("pas de mot de passe");
+        $reussite="pas de mot de passe";
     }
-    if (empty($_POST["pseudo"])){
-        die("pas de mail");
+    else if (empty($_POST["pseudo"])){
+        $reussite="pas de mail";
     }
+    else{
+        $pseudo = htmlspecialchars($_POST["pseudo"]);
+        $mdp  = sha1(htmlspecialchars($_POST["mdp"]));
 
-    $pseudo = htmlspecialchars($_POST["pseudo"]);
-    $mdp  = sha1(htmlspecialchars($_POST["mdp"]));
+        $queryPseudo = "SELECT * FROM `utilisateurs` WHERE pseudo='$pseudo'";
+        $resultPseudo = mysqli_query($conn,$queryPseudo) or die(mysql_error());
+        $rowsPseudo = mysqli_num_rows($resultPseudo);
 
-    
-    
-    $queryPseudo = "SELECT * FROM `utilisateurs` WHERE pseudo='$pseudo'";
-    $resultPseudo = mysqli_query($conn,$queryPseudo) or die(mysql_error());
-    $rowsPseudo = mysqli_num_rows($resultPseudo);
+        $queryMdp = "SELECT * FROM `utilisateurs` WHERE mdp='$mdp'";
+        $resultMdp = mysqli_query($conn,$queryMdp) or die(mysql_error());
+        $rowsMdp = mysqli_num_rows($resultMdp);
 
-    $queryMdp = "SELECT * FROM `utilisateurs` WHERE mdp='$mdp'";
-    $resultMdp = mysqli_query($conn,$queryMdp) or die(mysql_error());
-    $rowsMdp = mysqli_num_rows($resultMdp);
-
-    if($rowsPseudo>=1 or $rowsMdp>=1){
-        $reussite="pseudo ou mdp deja pris ";
-    }else{
-        $injection = $conn->prepare("INSERT INTO utilisateurs (pseudo, mdp) VALUE(?, ?)");
-        $injection->bind_param('ss', $pseudo, $mdp);
-        if(!$injection->execute()){
-            echo "error";
-            $reussite="inscription echoué";
+        if($rowsPseudo>=1 or $rowsMdp>=1){
+            $reussite="pseudo ou mdp deja pris ";
+        }else{
+            $injection = $conn->prepare("INSERT INTO utilisateurs (pseudo, mdp) VALUE(?, ?)");
+            $injection->bind_param('ss', $pseudo, $mdp);
+            if(!$injection->execute()){
+                echo "error";
+                $reussite="inscription echoué";
+            }
+            else{
+                $reussite="Vous avez été inscrit avec succes   <a href=\"connexion.php\">connexion</a>";
+            }
         }
-        else{
-            $reussite="Vous avez été inscrit avec succes ";
-        }
     }
-
-    
 }
 ?>
 
@@ -51,7 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <h1>Inscription</h1>
-
     <form action="inscription.php" method="POST">
         <ul>
             <li>
@@ -78,9 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ?>
     </p>
     <a href="acueille.php" name="retour">retour</a>
-    
     <br>
-    
-
 </body>
 </html>
