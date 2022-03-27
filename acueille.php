@@ -24,7 +24,7 @@
           echo "<br>";
           echo "<a href=\"connexion.html\">connexion</a>";
           echo "<br>";
-          echo "<a href=\"inscription.html\">inscription</a>";
+          echo "<a href=\"inscription.php\">inscription</a>";
         }
       ?>
       

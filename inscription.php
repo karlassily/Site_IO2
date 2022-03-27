@@ -14,18 +14,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pseudo = htmlspecialchars($_POST["pseudo"]);
     $mdp  = sha1(htmlspecialchars($_POST["mdp"]));
 
-    $injection = $conn->prepare("INSERT INTO utilisateurs (pseudo, mdp) VALUE(?, ?)");
-    $injection->bind_param('ss', $pseudo, $mdp);
+    
+    
+    $queryPseudo = "SELECT * FROM `utilisateurs` WHERE pseudo='$pseudo'";
+    $resultPseudo = mysqli_query($conn,$queryPseudo) or die(mysql_error());
+    $rowsPseudo = mysqli_num_rows($resultPseudo);
 
-    if(!$injection->execute()){
-        echo "error";
-        $lien="\"inscription.php\"";
-        $reussite="inscription echoué";
+    $queryMdp = "SELECT * FROM `utilisateurs` WHERE mdp='$mdp'";
+    $resultMdp = mysqli_query($conn,$queryMdp) or die(mysql_error());
+    $rowsMdp = mysqli_num_rows($resultMdp);
+
+    if($rowsPseudo>=1 or $rowsMdp>=1){
+        $reussite="pseudo ou mdp deja pris ";
+    }else{
+        $injection = $conn->prepare("INSERT INTO utilisateurs (pseudo, mdp) VALUE(?, ?)");
+        $injection->bind_param('ss', $pseudo, $mdp);
+        if(!$injection->execute()){
+            echo "error";
+            $reussite="inscription echoué";
+        }
+        else{
+            $reussite="Vous avez été inscrit avec succes ";
+        }
     }
-    else{
-        $lien="\"acueille.php\"";
-        $reussite="Vous avez été inscrit avec succes ";
-    }
+
+    
 }
 ?>
 
@@ -58,13 +71,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php 
         if(isset($reussite)){ 
             echo $reussite; 
-            echo "<a href=".$lien.">retour</a>";
         }
         else{
             echo "<p>Vous avez deja un compte : <a href=\"connexion.html\">connexion</a></p>";
         }
         ?>
     </p>
+    <a href="acueille.php" name="retour">retour</a>
     
     <br>
     
