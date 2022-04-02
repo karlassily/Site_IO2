@@ -16,10 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mdp  = sha1(htmlspecialchars($_POST["mdpCO"]));
 
         $query = "SELECT * FROM `utilisateurs` WHERE pseudo='$pseudo' and mdp='$mdp'";
-        $result = mysqli_query($conn,$query) or die(mysql_error());
+        $result = $conn->query($query) or die(mysql_error());
         $rows = mysqli_num_rows($result);
+        $info = $result->fetch_assoc();
         if($rows==1){
             $_SESSION['pseudo'] = $pseudo;
+            $_SESSION['id']=$info['id'];
             header("Location: acueille.php");
         }else{
         $reussite="Le nom d'utilisateur ou le mot de passe est incorrect.";
