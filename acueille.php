@@ -18,6 +18,13 @@
             if(!$resultatNote->execute()){
                 echo "error";
             }
+            
+            $demandeMoyenne = "SELECT avg(note) FROM avis WHERE article='$articleId'";
+            $moyenne = $conn->query($demandeMoyenne);
+            $moyenne = $moyenne->fetch_array()[0];
+
+            $ajoutDansArticle=$conn->prepare("UPDATE articles SET note = '$moyenne' WHERE id='$articleId'");
+            $ajoutDansArticle->execute();
         }
         else{
             $resultatNote = $conn->prepare("INSERT INTO avis (note ,article, utilisateur) VALUE(?, ?, ?)");
@@ -25,18 +32,79 @@
             if(!$resultatNote->execute()){
                 echo "error";
             }
+            $demandeMoyenne = "SELECT avg(note) FROM avis WHERE article='$id'";
+            $moyenne = $conn->query($demandeMoyenne);
+            $moyenne = $moyenne->fetch_array()[0];
+
+            $ajoutDansArticle=$conn->prepare("UPDATE articles SET note = '$moyenne' WHERE id='$articleId'");
+            $ajoutDansArticle->execute();
+        }        
+    }
+
+    function estAdmin($conn){
+        $id=$_SESSION['id'];
+        $recherche="SELECT * FROM utilisateurs WHERE id='$id'";
+        $resultat=$conn->query($recherche);
+        $resultat = $resultat->fetch_assoc();
+        if($resultat["admin"]==1){
+            return true;
+        }
+        else{
+            return false;
         }
 
-        
     }
 
     function pageUtilisateurConnecte($conn){
         echo "<a href=\"monProfile.php\">mon profil</a><br><br><a href=\"deconnexion.php\">deconnexion</a><br><br>";
-        $demande = 'SELECT * FROM articles';
+        if(estAdmin($conn)){
+            echo "
+            vous etes admin
+            <br>
+            <br>";
+        }
+        echo " recherche : 
+            <form action =\"\" method=\"GET\">
+                <input type=\"text\" name=\"recherche\">     
+                <input type=\"submit\">  
+                <br>
+                <input type=\"number\" name=\"minimum\" max=\"5\" min=\"0\"> : minimum  
+                <input type=\"number\" name=\"maximum\" max=\"5\" min=\"0\"> : maximum 
+                
+            </form>
+        ";
+        recherche($conn);
+    }
+
+    function recherche($conn){
+        if(isset($_GET['recherche'])){
+            $recherche="%".htmlspecialchars($_GET['recherche'])."%";
+        }
+        else{
+            $recherche="%";
+        }
+        if( isset($_GET['minimum']) && !empty($_GET['minimum'])){
+            $min=$_GET['minimum'];
+        }
+        else{
+            $min=0;
+        }
+        if(isset($_GET['maximum']) && !empty($_GET['maximum'])){
+            $max=$_GET['maximum'];
+            
+        }
+        else{
+            $max=5;
+        }
+        $demande = "SELECT * FROM articles WHERE titre LIKE '$recherche' AND note>='$min' AND note<='$max'";
         $resultat = $conn->query($demande);
+        affichageRecherche($resultat, $conn);
+    }
+
+    function affichageRecherche($resultat, $conn){
         while ($article = $resultat->fetch_assoc()){
-            $id = $article['id'];
-            $demandeMoyenne = "SELECT avg(note) FROM avis WHERE article='$id'";
+            $id = $article["id"];
+            $demandeMoyenne = "SELECT note FROM articles WHERE id='$id'";
             $moyenne = $conn->query($demandeMoyenne);
             $moyenne = $moyenne->fetch_array()[0];
             echo "<br>
