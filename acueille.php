@@ -52,7 +52,6 @@
         else{
             return false;
         }
-
     }
 
     function pageUtilisateurConnecte($conn){
@@ -119,7 +118,10 @@
                 <input type=\"hidden\" name=\"article\" value=\"".$article['id']."\">
                 <input type=\"submit\">
                 </form>
-            ";
+                <br>
+                <a href=\"page_article.php?article=".$id."\">voir l'article</a>"
+
+            ;
         }
     }
 
